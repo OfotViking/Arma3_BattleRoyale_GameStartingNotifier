@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# exclude US, show only Altis/bozcaada SOLO 
+# exclude US, show only Altis|HC and Bozcaada|HC only SOLO 
 grepx='US'
 grep1='Altis\|HC|Bozcaada\|HC'
 grep2='SOLO'
+
+green=$(tput setaf 2)
+normal=$(tput sgr0)
 
 while true; do
 # loop start
@@ -11,8 +14,11 @@ while true; do
 grab=$(wget -qO - http://status.battleroyalegames.com/)
 servers=$(echo "$grab" | grep server_name | grep -v OFFLINE | egrep -v $grepx | egrep $grep1 | egrep $grep2 | sed 's/  /_/g' | sed 's/ /_/g' | sed 's/>/> /g' | sed -e 's/<[^>]*>//g' | sed 's/&nbsp;//g' | sed 's/_Battle_Royale_._battleroyalegames.com//g' | sed 's/   / /g' | sed 's/  / /g' | sed 's/ //' )
 
-refreshtime=$(echo "$grab" | grep JavaScript:timedRefresh | cut -d"\"" -f 2 | cut -d"(" -f2 | cut -d"\"" -f 2 | cut -d")" -f1) # use the same refreshinterval as on website
-refreshseconds=$(expr $refreshtime / 1000 + 60) # add 60 seconds if all servers empty
+# use the same refreshinterval as on website
+refreshtime=$(echo "$grab" | grep JavaScript:timedRefresh | cut -d"\"" -f 2 | cut -d"(" -f2 | cut -d"\"" -f 2 | cut -d")" -f1) 
+
+# add 60 seconds if all servers empty
+refreshseconds=$(expr $refreshtime / 1000 + 60) 
 
 clear
 
@@ -27,16 +33,21 @@ while read -r line; do
   players=$(echo -n "$line" | cut -d" " -f6 | cut -d"/" -f1)
   date=$(cat /tmp/date$id)
   
-  if [ $status = SERVER_OPEN ] && (( $players > 1 )); then
-  status_color="\e[32m$status\e[0m"
-  else
-  status_color="$status"
-  fi
+
   
   date2=$(echo $date | cut -d" " -f2-4)
   
   printf "%-27s %s" " $name" \|
-  printf "%-17s %s" " $status_color" \|
+  if [ $status = SERVER_OPEN ] && (( $players > 1 )); then
+    #status_color="\e[32m$status\e[0m"
+    #printf "%-17s %s"  '\e[1;34m%-6s\e[m' " $status" \|
+	printf "${green}"
+    printf "%-17s %s" " $status"
+	printf "${normal}|"
+  else
+    printf "%-17s %s" " $status" \|
+  fi
+  
   printf "%-15s %s" " $date2" \|
   printf "%-3s %s" " $players" \|
   printf "%-21s %s" " $ip" \|
