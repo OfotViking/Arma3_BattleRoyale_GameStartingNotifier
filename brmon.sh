@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# exclude US, show only Altis|HC and Bozcaada|HC only SOLO 
+# exclude US, show only Altis.HC and Bozcaada.HC only SOLO 
 grepx='US'
-grep1='Altis\|HC|Bozcaada\|HC'
+grep1='Altis.HC|Bozcaada.HC'
 grep2='SOLO'
 
 green=$(tput setaf 2)
