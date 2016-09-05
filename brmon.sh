@@ -31,7 +31,7 @@ screen=$(screen -ls | grep tached)
 if [[ $screen == *"Attached"* ]]; then
 
 grab=$(wget -qO - http://status.battleroyalegames.com/)
-servers=$(echo "$grab" | grep server_name | egrep -v 'OFFLINE|UNKNOWN' | egrep -v "$exclude" | sed 's/&nbsp;//g' | sed -e 's/<[^>]*b>//g' | sed 's/  //g' | sed 's/ //g' | sed -e 's/<[^>]*>/ /g' | sed 's/battleroyalegames.com//g'| egrep "$include1" | egrep "$include2" | sed 's/SERVEROPEN/SERVER_OPEN/g' | sed 's/GAMEINPROGRESS/GAME_IN_PROGRESS/g' | sed 's/OPENINGSOON/OPENING_SOON/g' |sort)
+servers=$(echo "$grab" | grep server_name | sed 's/&nbsp;//g' | sed -e 's/<[^>]*b>//g' | sed 's/  //g' | sed 's/ //g' | sed -e 's/<[^>]*>/ /g' | egrep -v 'OFFLINE|UNKNOWN' | egrep -v "$exclude" | egrep "$include1" | egrep "$include2" | sed 's/battleroyalegames.com//'| sed 's/SERVEROPEN/SERVER_OPEN/g' | sed 's/GAMEINPROGRESS/GAME_IN_PROGRESS/g' | sed 's/OPENINGSOON/OPENING_SOON/g' |sort)
 
 
 # use the same refreshinterval as on website
